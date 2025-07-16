@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPay - Digital Banking</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --accent: #4895ef;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, 'Geneva', Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    #app {
+      max-width: 420px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page {
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: transform 0.3s ease;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Header Styles */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 10px;
+      color: var(--accent);
+    }
+    
+    /* Balance Card */
+    .balance-card {
+      background: linear-gradient(135deg, #3a0ca3 0%, #7209b7 100%);
+      color: (--dark);
+      position: relative;
+      overflow:hidden;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .balance-amount {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .action-btn {
+      background: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .action-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    
+    /* Tap to Pay Section */
+    .tap-to-pay {
+      background: linear-gradient(135deg, #3a0ca3 0%, #7209b7 100%);
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tap-to-pay::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    
+    .tap-icon {
+      font-size: 40px;
+      margin: 15px 0;
+    }
+    
+    /* New Animations */
+    #send-animation, #bill-animation {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+    
+    /* Payment Methods */
+    .payment-methods {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+    
+    .payment-method {
+      text-align: center;
+      cursor: pointer;
+    }
+    
+    .payment-icon {
+      width: 50px;
+      height: 50px;
+      background: #f1f1f1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+      font-size: 20px;
+    }
+    
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      text-align: left;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    /* Button Styles */
+    .btn {
+      padding: 14px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+    
+    .btn-block {
+      width: 100%;
+    }
+    
+    .btn-icon {
+      margin-right: 8px;
+    }
+    
+    /* Card Styles */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      transition: transform 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Transactions */
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .transaction-details {
+      flex: 1;
+      margin-left: 15px;
+    }
+    
+    .transaction-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .transaction-date {
+      font-size: 12px;
+      color: #6c757d;
+    }
+    
+    .transaction-amount {
+      font-weight: 700;
+    }
+    
+    .credit {
+      color: #2ecc71;
+    }
+    
+    .debit {
+      color: #e74c3c;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    /* Success Page */
+    #success-animation {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 20px;
+    }
+    
+    .success-message {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: var(--primary);
+    }
+    
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      background: white;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 420px;
+      margin: 0 auto;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      z-index: 100;
+    }
+    
+    .nav-tab {
+      flex: 1;
+      padding: 15px 0;
+      text-align: center;
+      color: #6c757d;
+      transition: all 0.3s;
+    }
+    
+    .nav-tab.active {
+      color: var(--primary);
+    }
+    
+    .nav-tab i {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .nav-tab span {
+      display: block;
+      font-size: 12px;
+    }
+    
+    /* Profile Page */
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 15px;
+      border: 3px solid var(--accent);
+    }
+    
+    .profile-info {
+      margin-bottom: 30px;
+    }
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .info-label {
+      font-weight: 500;
+      color: #6c757d;
+    }
+    
+    .info-value {
+      font-weight: 600;
+    }
+    
+    /* Cards Page */
+    .card-item {
+      position: relative;
+      height: 180px;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      color: white;
+      overflow: hidden;
+    }
+    
+    .card-item::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    
+    .card-item::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      left: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    
+    .card-primary {
+      background: linear-gradient(135deg, #3a0ca3 0%, #7209b7 100%);
+    }
+    
+    .card-secondary {
+      background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+    }
+    
+    .card-chip {
+      width: 50px;
+      margin-bottom: 20px;
+    }
+    
+    .card-number {
+      letter-spacing: 2px;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    
+    .card-details {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    /* Mobile Load */
+    .network-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .network-btn {
+      background: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .network-btn.active {
+      border: 2px solid var(--primary);
+    }
+    
+    .network-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .network-logo {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 8px;
+    }
+    
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 480px) {
+      .quick-actions, .network-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Home Page -->
+    <div id="home-page" class="page">
+      <div class="header">
+        <div class="logo">
+          <i class="fas fa-wallet"></i> MyPay
+        </div>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <!-- Balance Card with Toggle -->
+      <div class="card balance-card animate-in" style="animation-delay: 0.1s;">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <p><strong>Available Balance</strong></p>
+            <div class="balance-amount" id="balance-amount" style="display: none;">Rs. 12,500</div>
+            <p><strong>Ahmad Javed</strong></p>
+          </div>
+          <div style="align-self: center;">
+            <i class="fas fa-eye-slash" id="toggle-balance" style="font-size: 20px; cursor: pointer;"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tap to Pay Section -->
+      <div class="tap-to-pay" onclick="goTo('tap-pay-page')">
+        <h3>Tap to Pay</h3>
+        <div class="tap-icon">
+          <i class="fas fa-hand-holding-usd"></i>
+        </div>
+        <p>Hold your phone near a payment terminal</p>
+      </div>
+      
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="action-btn animate-in" style="animation-delay: 0.2s;" onclick="goTo('send-page')">
+          <div class="action-icon"><i class="fas fa-paper-plane"></i></div>
+          <span>Send</span>
+        </div>
+        <div class="action-btn animate-in" style="animation-delay: 0.3s;" onclick="goTo('request-page')">
+          <div class="action-icon"><i class="fas fa-hand-holding-usd"></i></div>
+          <span>Request</span>
+        </div>
+        <div class="action-btn animate-in" style="animation-delay: 0.4s;" onclick="goTo('bill-page')">
+          <div class="action-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+          <span>Bills</span>
+        </div>
+        <div class="action-btn animate-in" style="animation-delay: 0.5s;" onclick="goTo('mobile-load-page')">
+          <div class="action-icon"><i class="fas fa-mobile-alt"></i></div>
+          <span>Mobile Load</span>
+        </div>
+      </div>
+      
+      <h3 style="margin: 20px 0 10px; text-align: left; color: var(--dark);">Recent Transactions</h3>
+      
+      <div class="transaction-item animate-in" style="animation-delay: 0.6s;">
+        <div style="width: 40px; height: 40px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-arrow-down" style="color: var(--primary);"></i>
+        </div>
+        <div class="transaction-details">
+          <div class="transaction-title">Received from Ali</div>
+          <div class="transaction-date">Today, 10:30 AM</div>
+        </div>
+        <div class="transaction-amount credit">+Rs. 5,000</div>
+      </div>
+      
+      <div class="transaction-item animate-in" style="animation-delay: 0.7s;">
+        <div style="width: 40px; height: 40px; background: #ffebee; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-arrow-up" style="color: var(--danger);"></i>
+        </div>
+        <div class="transaction-details">
+          <div class="transaction-title">Sent to Sara</div>
+          <div class="transaction-date">Yesterday, 2:15 PM</div>
+        </div>
+        <div class="transaction-amount debit">-Rs. 2,500</div>
+      </div>
+      
+      <div class="transaction-item animate-in" style="animation-delay: 0.8s;">
+        <div style="width: 40px; height: 40px; background: #fff8e1; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-bolt" style="color: var(--warning);"></i>
+        </div>
+        <div class="transaction-details">
+          <div class="transaction-title">Electricity Bill</div>
+          <div class="transaction-date">Jan 12, 2023</div>
+        </div>
+        <div class="transaction-amount debit">-Rs. 3,200</div>
+      </div>
+      
+      <div style="flex: 1;"></div>
+      
+      <div class="nav-tabs">
+        <div class="nav-tab active" onclick="goTo('home-page')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('transactions-page')">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('cards-page')">
+          <i class="far fa-credit-card"></i>
+          <span>Cards</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('profile-page')">
+          <i class="far fa-user"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Send Money Page -->
+    <div id="send-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Send Money</h3>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <div id="send-animation"></div>
+      
+      <!-- Payment Methods -->
+      <div class="payment-methods">
+        <div class="payment-method" onclick="selectPayment('wallet')">
+          <div class="payment-icon"><i class="fas fa-wallet"></i></div>
+          <span>Wallet</span>
+        </div>
+        <div class="payment-method" onclick="selectPayment('bank')">
+          <div class="payment-icon"><i class="fas fa-university"></i></div>
+          <span>Bank</span>
+        </div>
+        <div class="payment-method" onclick="selectPayment('card')">
+          <div class="payment-icon"><i class="far fa-credit-card"></i></div>
+          <span>Card</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Recipient Phone Number</label>
+        <input type="text" id="send-to" class="form-control" placeholder="03001234567">
+      </div>
+      
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" id="send-amount" class="form-control" placeholder="Rs. 0">
+      </div>
+      
+      <div class="form-group">
+        <label>Purpose (Optional)</label>
+        <input type="text" class="form-control" placeholder="e.g. Dinner, Rent, etc.">
+      </div>
+      
+      <button class="btn btn-primary btn-block" onclick="sendMoney()">
+        <i class="fas fa-paper-plane btn-icon"></i> Send Money
+      </button>
+      
+      <h4 style="margin: 30px 0 15px; text-align: left; color: var(--dark);">Recent Recipients</h4>
+      
+      <div style="display: flex; overflow-x: auto; padding-bottom: 10px; gap: 15px;">
+        <div style="min-width: 80px; text-align: center; cursor: pointer;" onclick="document.getElementById('send-to').value='03001234567'">
+          <div style="width: 60px; height: 60px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            <i class="fas fa-user" style="font-size: 24px; color: var(--primary);"></i>
+          </div>
+          <span style="font-size: 12px;">Ali</span>
+        </div>
+        
+        <div style="min-width: 80px; text-align: center; cursor: pointer;" onclick="document.getElementById('send-to').value='03009876543'">
+          <div style="width: 60px; height: 60px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            <i class="fas fa-user" style="font-size: 24px; color: #2e7d32;"></i>
+          </div>
+          <span style="font-size: 12px;">Sara</span>
+        </div>
+        
+        <div style="min-width: 80px; text-align: center; cursor: pointer;" onclick="document.getElementById('send-to').value='03005678901'">
+          <div style="width: 60px; height: 60px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            <i class="fas fa-user" style="font-size: 24px; color: #e65100;"></i>
+          </div>
+          <span style="font-size: 12px;">Ahmed</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tap to Pay Page -->
+    <div id="tap-pay-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Tap to Pay</h3>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 50px;">
+        <div id="tap-pay-animation" style="width: 200px; height: 200px; margin: 0 auto;"></div>
+        <h3 style="margin: 20px 0 10px;">Hold Your Phone Near Terminal</h3>
+        <p style="color: #6c757d;">Keep your device close to the payment terminal until payment is complete</p>
+        
+        <div style="margin-top: 40px;">
+          <div class="card-item card-primary" style="width: 80%; margin: 0 auto;">
+            <!-- Card display for tap to pay -->
+            <div style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="font-size: 12px; margin-bottom: 5px;">MyPay</p>
+                <p style="font-weight: 500;">Tap to Pay</p>
+              </div>
+              <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" style="width: 40px;">
+            </div>
+            <div style="letter-spacing: 2px; font-size: 18px; margin: 20px 0;">•••• •••• •••• 4567</div>
+            <div style="display: flex; justify-content: space-between;">
+              <div>
+                <p style="font-size: 12px; margin-bottom: 5px;">Card Holder</p>
+                <p style="font-weight: 500;">Ahmad Javed</p>
+              </div>
+              <div>
+                <p style="font-size: 12px; margin-bottom: 5px;">Expires</p>
+                <p style="font-weight: 500;">09/25</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Request Money Page -->
+    <div id="request-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Request Money</h3>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Request From</label>
+        <input type="text" class="form-control" placeholder="Phone Number">
+      </div>
+      
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" class="form-control" placeholder="Rs. 0">
+      </div>
+      
+      <div class="form-group">
+        <label>Purpose</label>
+        <input type="text" class="form-control" placeholder="e.g. Lunch, Share, etc.">
+      </div>
+      
+      <button class="btn btn-primary btn-block" onclick="requestMoney()">
+        <i class="fas fa-hand-holding-usd btn-icon"></i> Request Money
+      </button>
+      
+      <h4 style="margin: 30px 0 15px; text-align: left; color: var(--dark);">Pending Requests</h4>
+      
+      <div class="transaction-item">
+        <div style="width: 40px; height: 40px; background: #fff3e0; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-clock" style="color: var(--warning);"></i>
+        </div>
+        <div class="transaction-details">
+          <div class="transaction-title">Request from Ali</div>
+          <div class="transaction-date">Rs. 1,500 - Lunch</div>
+        </div>
+        <div style="color: #6c757d;">Pending</div>
+      </div>
+      
+      <div class="transaction-item">
+        <div style="width: 40px; height: 40px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-check" style="color: #2e7d32;"></i>
+        </div>
+        <div class="transaction-details">
+          <div class="transaction-title">Request from Sara</div>
+          <div class="transaction-date">Rs. 2,000 - Dinner</div>
+        </div>
+        <div style="color: #2e7d32;">Completed</div>
+      </div>
+    </div>
+    
+    <!-- Bill Payment Page -->
+    <div id="bill-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Pay Bills</h3>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Bill Type</label>
+        <select class="form-control" id="bill-type">
+          <option value="">Select Bill Type</option>
+          <option>Electricity</option>
+          <option>Gas</option>
+          <option>Water</option>
+          <option>Internet</option>
+          <option>Mobile Postpaid</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Account Number</label>
+        <input type="text" id="bill-account" class="form-control" placeholder="Account Number">
+      </div>
+      
+      <div class="form-group">
+        <label>Amount</label>
+        <input type="number" id="bill-amount" class="form-control" placeholder="Rs. 0">
+      </div>
+      
+      <button class="btn btn-primary btn-block" onclick="payBill()">
+        <i class="fas fa-file-invoice-dollar btn-icon"></i> Pay Bill
+      </button>
+      
+      <h4 style="margin: 30px 0 15px; text-align: left; color: var(--dark);">Quick Pay</h4>
+      
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+        <div class="action-btn" onclick="document.getElementById('bill-type').value='Electricity';document.getElementById('bill-account').value='ELECT123456'">
+          <div class="action-icon"><i class="fas fa-bolt"></i></div>
+          <span>Electricity</span>
+        </div>
+        <div class="action-btn" onclick="document.getElementById('bill-type').value='Gas';document.getElementById('bill-account').value='GAS7890123'">
+          <div class="action-icon"><i class="fas fa-fire"></i></div>
+          <span>Gas</span>
+        </div>
+        <div class="action-btn" onclick="document.getElementById('bill-type').value='Water';document.getElementById('bill-account').value='WATER456789'">
+          <div class="action-icon"><i class="fas fa-tint"></i></div>
+          <span>Water</span>
+        </div>
+        <div class="action-btn" onclick="document.getElementById('bill-type').value='Internet';document.getElementById('bill-account').value='PTCL789012'">
+          <div class="action-icon"><i class="fas fa-wifi"></i></div>
+          <span>Internet</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Load Page -->
+    <div id="mobile-load-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Mobile Load</h3>
+        <div style="width: 20px;"></div>
+      </div>
+      
+      <div class="form-group">
+        <label>Mobile Network</label>
+        <div class="network-options">
+          <div class="network-btn" onclick="selectNetwork('jazz')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Jazz_logo.svg/1200px-Jazz_logo.svg.png" class="network-logo">
+            <span>Jazz</span>
+          </div>
+          <div class="network-btn" onclick="selectNetwork('zong')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Zong_Logo.svg/1200px-Zong_Logo.svg.png" class="network-logo">
+            <span>Zong</span>
+          </div>
+          <div class="network-btn" onclick="selectNetwork('telenor')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Telenor_Pakistan_logo.svg/1200px-Telenor_Pakistan_logo.svg.png" class="network-logo">
+            <span>Telenor</span>
+          </div>
+          <div class="network-btn" onclick="selectNetwork('ufone')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Ufone_Logo.svg/1200px-Ufone_Logo.svg.png" class="network-logo">
+            <span>Ufone</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="text" id="mobile-number" class="form-control" placeholder="03001234567">
+      </div>
+      
+      <div class="form-group">
+        <label>Amount</label>
+        <select class="form-control" id="load-amount">
+          <option value="10">Rs. 10</option>
+          <option value="50">Rs. 50</option>
+          <option value="100">Rs. 100</option>
+          <option value="200">Rs. 200</option>
+          <option value="500">Rs. 500</option>
+          <option value="1000">Rs. 1000</option>
+        </select>
+      </div>
+      
+      <button class="btn btn-primary btn-block" onclick="rechargeMobile()">
+        <i class="fas fa-mobile-alt btn-icon"></i> Recharge Now
+      </button>
+    </div>
+    
+    <!-- Transactions Page -->
+    <div id="transactions-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">Transactions</h3>
+        <i class="fas fa-filter" style="font-size: 20px; color: var(--dark); cursor: pointer;"></i>
+      </div>
+      
+      <div style="margin: 20px 0;">
+        <div style="display: flex; justify-content: space-around; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+          <div style="text-align: center; cursor: pointer; font-weight: 500; color: var(--primary);">All</div>
+          <div style="text-align: center; cursor: pointer;">Sent</div>
+          <div style="text-align: center; cursor: pointer;">Received</div>
+          <div style="text-align: center; cursor: pointer;">Bills</div>
+        </div>
+      </div>
+      
+      <div id="transactions-list">
+        <!-- Transactions will be loaded here -->
+      </div>
+      
+      <div class="nav-tabs">
+        <div class="nav-tab" onclick="goTo('home-page')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div class="nav-tab active" onclick="goTo('transactions-page')">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('cards-page')">
+          <i class="far fa-credit-card"></i>
+          <span>Cards</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('profile-page')">
+          <i class="far fa-user"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Cards Page -->
+    <div id="cards-page" class="page hidden">
+      <div class="header">
+        <i class="fas fa-arrow-left" style="font-size: 20px; cursor: pointer;" onclick="goTo('home-page')"></i>
+        <h3 style="color: var(--dark);">My Cards</h3>
+        <i class="fas fa-plus" style="font-size: 20px; color: var(--primary); cursor: pointer;"></i>
+      </div>
+      
+      <div class="card-item card-primary">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">MyPay</p>
+            <p style="font-weight: 500;">Premium Card</p>
+          </div>
+          <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" class="card-chip">
+        </div>
+        <div class="card-number">•••• •••• •••• 4567</div>
+        <div class="card-details">
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">Card Holder</p>
+            <p style="font-weight: 500;">Ahmad Javed</p>
+          </div>
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">Expires</p>
+            <p style="font-weight: 500;">09/25</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-item card-secondary">
+        <div style="display: flex; justify-content: space-between;">
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">MyPay</p>
+            <p style="font-weight: 500;">Debit Card</p>
+          </div>
+          <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" class="card-chip">
+        </div>
+        <div class="card-number">•••• •••• •••• 8910</div>
+        <div class="card-details">
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">Card Holder</p>
+            <p style="font-weight: 500;">Ahmad Javed</p>
+          </div>
+          <div>
+            <p style="font-size: 12px; margin-bottom: 5px;">Expires</p>
+            <p style="font-weight: 500;">12/24</p>
+          </div>
+        </div>
+      </div>
+      
+      <h4 style="margin: 20px 0 15px; text-align: left; color: var(--dark);">Card Settings</h4>
+      
+      <div class="card">
+        <div class="info-item">
+          <span class="info-label">Freeze Card</span>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Online Payments</span>
+          <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="info-item">
+          <span class="info-label">ATM Withdrawals</span>
+          <label class="switch">
+            <input type="checkbox" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="nav-tabs">
+        <div class="nav-tab" onclick="goTo('home-page')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('transactions-page')">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </div>
+        <div class="nav-tab active" onclick="goTo('cards-page')">
+          <i class="far fa-credit-card"></i>
+          <span>Cards</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('profile-page')">
+          <i class="far fa-user"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Profile Page -->
+    <div id="profile-page" class="page hidden">
+      <div class="profile-header">
+        <img src="WhatsApp Image 2025-05-18 at 6.21.43 PM.jpeg" class="profile-pic">
+        <h2>Ahmad Javed</h2>
+        <p style="color: #6c757d;">+92 300 1234567</p>
+      </div>
+      
+      <div class="profile-info">
+        <h4 style="margin-bottom: 15px; color: var(--dark);">Personal Information</h4>
+        
+        <div class="card">
+          <div class="info-item">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">Ahmad Javed</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone Number</span>
+            <span class="info-value">+92 300 1234567</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">CNIC</span>
+            <span class="info-value">12345-6789012-3</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">Ahmad.Javed@gmail.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Address</span>
+            <span class="info-value">ghouri town, islamabad</span>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: auto;">
+        <button class="btn btn-primary btn-block" onclick="logout()">
+          <i class="fas fa-sign-out-alt btn-icon"></i> Logout
+        </button>
+      </div>
+      
+      <div class="nav-tabs">
+        <div class="nav-tab" onclick="goTo('home-page')">
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('transactions-page')">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </div>
+        <div class="nav-tab" onclick="goTo('cards-page')">
+          <i class="far fa-credit-card"></i>
+          <span>Cards</span>
+        </div>
+        <div class="nav-tab active" onclick="goTo('profile-page')">
+          <i class="far fa-user"></i>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+    <div id="success-page" class="page hidden" style="justify-content: flex-start; text-align: center; padding-top: 20px;">
+  <!-- Success Animation -->
+  <div id="success-animation" style="width: 150px; height: 150px; margin: 20px auto;"></div>
+  
+  <!-- Compact Receipt Card -->
+  <div class="card" style="margin: 0 auto 20px; text-align: left; border-left: 4px solid var(--success); max-width: 320px; padding: 15px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center;">
+      <h3 style="color: var(--success); font-size: 18px; margin: 0;">Payment Successful!</h3>
+      <div style="font-size: 10px; color: #6c757d;">#TRX123456</div>
+    </div>
+    
+    <div class="info-item" style="padding: 8px 0; font-size: 14px;">
+      <span class="info-label">Amount</span>
+      <span class="info-value" id="receipt-amount">Rs. 0</span>
+    </div>
+    
+    <div class="info-item" style="padding: 8px 0; font-size: 14px;">
+      <span class="info-label">Recipient</span>
+      <span class="info-value" id="receipt-recipient">-</span>
+    </div>
+    
+    <div class="info-item" style="padding: 8px 0; font-size: 14px;">
+      <span class="info-label">Date & Time</span>
+      <span class="info-value" id="receipt-date">-</span>
+    </div>
+    
+    <div class="info-item" style="padding: 8px 0; font-size: 14px;">
+      <span class="info-label">Status</span>
+      <span class="info-value" style="color: var(--success);">Completed</span>
+    </div>
+    
+    <div class="info-item" id="receipt-purpose-container" style="padding: 8px 0; font-size: 14px; display: none;">
+      <span class="info-label">Purpose</span>
+      <span class="info-value" id="receipt-purpose">-</span>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+  <div style="display: flex; justify-content: center; gap: 10px; margin: 15px 0;">
+    <button class="btn" style="padding: 10px 15px; font-size: 14px;" onclick="downloadReceipt()">
+      <i class="fas fa-download btn-icon"></i> Download
+    </button>
+    <button class="btn btn-primary" style="padding: 10px 15px; font-size: 14px;" onclick="shareReceipt()">
+      <i class="fas fa-share-alt btn-icon"></i> Share
+    </button>
+  </div>
+  
+  <button class="btn btn-primary btn-block" style="margin-top: 10px;" onclick="goTo('home-page')">
+    <i class="fas fa-home btn-icon"></i> Back to Home
+  </button>
+</div>
+<script>
+    // Navigation function
+    function goTo(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.add('hidden');
+      });
+      
+      // Show the selected page
+      document.getElementById(pageId).classList.remove('hidden');
+      
+      // Update active tab
+      if(pageId !== 'success-page') {
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        
+        // Find the corresponding tab and make it active
+        const tab = document.querySelector(`.nav-tab[onclick="goTo('${pageId}')"]`);
+        if(tab) {
+          tab.classList.add('active');
+        }
+      }
+      
+      // Load transactions if going to transactions page
+      if(pageId === 'transactions-page') {
+        loadTransactions();
+      }
+      
+      // Play tap sound for navigation
+      playTapSound();
+    }
+    
+    // Sound effects
+    const playSuccessSound = () => {
+      const audio = new Audio('beep-6-96243.mp3');
+      audio.play();
+    };
+    
+    const playTapSound = () => {
+      const audio = new Audio('tap-notification-180637.mp3');
+      audio.play();
+    };
+    
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', function() {
+      // Balance toggle
+      const toggleBalance = document.getElementById('toggle-balance');
+      if (toggleBalance) {
+        toggleBalance.addEventListener('click', function() {
+          const balance = document.getElementById('balance-amount');
+          const hidden = document.getElementById('hidden-balance');
+          
+          if (balance.style.display === 'none') {
+            balance.style.display = 'block';
+            hidden.style.display ='b';
+            this.classList.replace('fa-eye-slash', 'fa-eye');
+          } else {
+            balance.style.display = 'none';
+            hidden.style.display = 'block';
+            this.classList.replace('fa-eye', 'fa-eye-slash');
+          }
+        });
+      }
+      
+      // Load new animations
+      if (document.getElementById('send-animation')) {
+        lottie.loadAnimation({
+          container: document.getElementById('send-animation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://assets6.lottiefiles.com/packages/lf20_isdnju3b.json'
+        });
+      }
+      
+      if (document.getElementById('bill-animation')) {
+        lottie.loadAnimation({
+          container: document.getElementById('bill-animation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://assets6.lottiefiles.com/packages/lf20_0fhj6rli.json'
+        });
+      }
+      
+      if (document.getElementById('tap-pay-animation')) {
+        lottie.loadAnimation({
+          container: document.getElementById('tap-pay-animation'),
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: 'https://assets6.lottiefiles.com/packages/lf20_5tkzkblw.json'
+        });
+      }
+      
+      // Show home page by default
+      goTo('home-page');
+    });
+    
+    // Select payment method
+    function selectPayment(method) {
+      playTapSound();
+      // Highlight selected method
+      document.querySelectorAll('.payment-method').forEach(el => {
+        el.style.opacity = '0.6';
+      });
+      event.currentTarget.style.opacity = '1';
+    }
+    
+    // Send money function
+    function sendMoney() {
+      const number = document.getElementById('send-to').value;
+      const amount = document.getElementById('send-amount').value;
+      
+      if (!number || !amount) {
+        showError('Please fill all fields');
+        return;
+      }
+      
+      if(number.length !== 11) {
+        showError('Please enter a valid 11-digit phone number');
+        return;
+      }
+      
+      if(amount < 100) {
+        showError('Minimum amount is Rs. 100');
+        return;
+      }
+      
+      playSuccessSound();
+      showSuccess(`Rs. ${amount} sent to ${number}`);
+      
+      // Add to transaction history
+      const transaction = {
+        type: 'sent',
+        to: number,
+        amount: amount,
+        date: new Date().toLocaleString(),
+        description: 'Money transfer'
+      };
+      
+      addTransaction(transaction);
+    }
+    
+    // Request money function
+    function requestMoney() {
+      const number = document.querySelector('#request-page input').value;
+      const amount = document.querySelectorAll('#request-page input')[1].value;
+      
+      if (!number || !amount) {
+        showError('Please fill all fields');
+        return;
+      }
+      
+      playSuccessSound();
+      showSuccess(`Request for Rs. ${amount} sent to ${number}`);
+    }
+    
+    // Pay bill function
+    function payBill() {
+      const type = document.getElementById('bill-type').value;
+      const account = document.getElementById('bill-account').value;
+      const amount = document.getElementById('bill-amount').value;
+      
+      if (!type || !account || !amount) {
+        showError('Please fill all fields');
+        return;
+      }
+      
+      if(amount < 100) {
+        showError('Minimum amount is Rs. 100');
+        return;
+      }
+      
+      showSuccess(`Rs. ${amount} paid for ${type} Bill`);
+      
+      // Add to transaction history
+      const transaction = {
+        type: 'bill',
+        billType: type,
+        account: account,
+        amount: amount,
+        date: new Date().toLocaleString(),
+        description: `${type} Bill Payment`
+      };
+      
+      addTransaction(transaction);
+    }
+    
+    // Recharge mobile function
+    function rechargeMobile() {
+      const number = document.getElementById('mobile-number').value;
+      const amount = document.getElementById('load-amount').value;
+      
+      if (!number) {
+        showError('Please enter mobile number');
+        return;
+      }
+      
+      if(number.length !== 11) {
+        showError('Please enter a valid 11-digit phone number');
+        return;
+      }
+      
+      showSuccess(`Rs. ${amount} mobile load to ${number}`);
+      
+      // Add to transaction history
+      const transaction = {
+        type: 'mobile',
+        number: number,
+        amount: amount,
+        date: new Date().toLocaleString(),
+        description: 'Mobile Recharge'
+      };
+      
+      addTransaction(transaction);
+    }
+    
+    // Select mobile network
+    function selectNetwork(network) {
+      document.querySelectorAll('.network-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.closest('.network-btn').classList.add('active');
+    }
+    
+    // Enhanced showSuccess function with receipt details
+function showSuccess(message, transactionData = {}) {
+  goTo('success-page');
+  
+  // Generate a random transaction ID
+  const txnId = 'TXN' + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+  
+  // Update receipt details
+  document.getElementById('receipt-amount').textContent = `Rs. ${transactionData.amount || '0'}`;
+  document.getElementById('receipt-recipient').textContent = transactionData.recipient || 'N/A';
+  document.getElementById('receipt-type').textContent = transactionData.type || 'Payment';
+  document.getElementById('receipt-date').textContent = new Date().toLocaleString();
+  document.getElementById('receipt-txn-id').textContent = txnId;
+  
+  // Show additional fields based on transaction type
+  const purposeContainer = document.getElementById('receipt-purpose-container');
+  if (transactionData.purpose) {
+    purposeContainer.style.display = 'flex';
+    document.getElementById('receipt-purpose').textContent = transactionData.purpose;
+  } else {
+    purposeContainer.style.display = 'none';
+  }
+  
+  const billContainer = document.getElementById('receipt-bill-container');
+  if (transactionData.billDetails) {
+    billContainer.style.display = 'flex';
+    document.getElementById('receipt-bill').textContent = transactionData.billDetails;
+  } else {
+    billContainer.style.display = 'none';
+  }
+  
+  // Load success animation
+  lottie.loadAnimation({
+    container: document.getElementById('success-animation'),
+    renderer: 'svg',
+    loop: false,
+    autoplay: true,
+    path: 'Animation - 1747554242073.json'
+  });
+  
+  // Play success sound
+  playSuccessSound();
+}
+
+// Share receipt function
+function shareReceipt() {
+  try {
+    const receiptData = {
+      amount: document.getElementById('receipt-amount').textContent,
+      recipient: document.getElementById('receipt-recipient').textContent,
+      type: document.getElementById('receipt-type').textContent,
+      date: document.getElementById('receipt-date').textContent,
+      txnId: document.getElementById('receipt-txn-id').textContent
+    };
+    
+    const shareText = `Payment Receipt\n\n` +
+                     `Amount: ${receiptData.amount}\n` +
+                     `Recipient: ${receiptData.recipient}\n` +
+                     `Transaction Type: ${receiptData.type}\n` +
+                     `Date: ${receiptData.date}\n` +
+                     `Transaction ID: ${receiptData.txnId}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Payment Receipt',
+        text: shareText
+      }).catch(err => {
+        console.error('Error sharing:', err);
+        copyToClipboard(shareText);
+      });
+    } else {
+      copyToClipboard(shareText);
+    }
+  } catch (error) {
+    console.error('Error in shareReceipt:', error);
+    alert('Could not share receipt. Please try again.');
+  }
+}
+
+// Download receipt as PDF (simulated)
+function downloadReceipt() {
+  try {
+    // In a real app, this would generate an actual PDF
+    const receiptData = {
+      amount: document.getElementById('receipt-amount').textContent,
+      recipient: document.getElementById('receipt-recipient').textContent,
+      date: document.getElementById('receipt-date').textContent,
+      txnId: document.getElementById('receipt-txn-id').textContent
+    };
+    
+    // Simulate download
+    const link = document.createElement('a');
+    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(
+      `MyPay Receipt\n\n` +
+      `Transaction ID: ${receiptData.txnId}\n` +
+      `Amount: ${receiptData.amount}\n` +
+      `Recipient: ${receiptData.recipient}\n` +
+      `Date: ${receiptData.date}\n\n` +
+      `Thank you for using MyPay!`
+    )}`;
+    link.download = `MyPay_Receipt_${receiptData.txnId}.txt`;
+    link.click();
+    
+    playTapSound();
+  } catch (error) {
+    console.error('Error in downloadReceipt:', error);
+    alert('Could not download receipt. Please try again.');
+  }
+}
+
+// Helper function to copy to clipboard
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Receipt copied to clipboard! You can now paste it anywhere.');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    alert('Could not copy receipt. Please manually copy the details.');
+  });
+}
+function showSuccess(message, transactionData = {}) {
+  goTo('success-page');
+  
+  // Generate a random transaction ID
+  const txnId = 'TXN' + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+  
+  // Update receipt details
+  document.getElementById('receipt-amount').textContent = `Rs. ${transactionData.amount || '0'}`;
+  document.getElementById('receipt-recipient').textContent = transactionData.recipient || 'N/A';
+  document.getElementById('receipt-type').textContent = transactionData.type || 'Payment';
+  document.getElementById('receipt-date').textContent = new Date().toLocaleString();
+  document.getElementById('receipt-txn-id').textContent = txnId;
+  
+  // Show additional fields based on transaction type
+  const purposeContainer = document.getElementById('receipt-purpose-container');
+  if (transactionData.purpose) {
+    purposeContainer.style.display = 'flex';
+    document.getElementById('receipt-purpose').textContent = transactionData.purpose;
+  } else {
+    purposeContainer.style.display = 'none';
+  }
+  
+  const billContainer = document.getElementById('receipt-bill-container');
+  if (transactionData.billDetails) {
+    billContainer.style.display = 'flex';
+    document.getElementById('receipt-bill').textContent = transactionData.billDetails;
+  } else {
+    billContainer.style.display = 'none';
+  }
+
+  // Clear any existing animation
+  const animationContainer = document.getElementById('success-animation');
+  animationContainer.innerHTML = '';
+  
+  // Load and play success animation
+  const animation = lottie.loadAnimation({
+    container: animationContainer,
+    renderer: 'svg',
+    loop: false,
+    autoplay: true,
+    path: 'Animation - 1747554242073.json' // Your animation file
+  });
+
+  // Handle animation completion
+  animation.addEventListener('complete', () => {
+    animationContainer.style.opacity = '1';
+  });
+
+  // Play success sound
+  playSuccessSound();
+}
+
+
+// Download receipt as PDF (simulated)
+// Download receipt as PDF using jsPDF
+function downloadReceipt() {
+  try {
+    // Get all required elements first
+    const amountEl = document.getElementById('receipt-amount');
+    const recipientEl = document.getElementById('receipt-recipient');
+    const dateEl = document.getElementById('receipt-date');
+    const txnIdEl = document.getElementById('receipt-txn-id');
+
+    // Validate elements exist
+    if (!amountEl || !recipientEl || !dateEl || !txnIdEl) {
+      throw new Error('Missing receipt elements in DOM');
+    }
+
+    // Prepare receipt data with fallbacks
+    const receiptData = {
+      amount: amountEl.textContent || 'Rs. 0',
+      recipient: recipientEl.textContent || 'Unknown',
+      date: dateEl.textContent || new Date().toLocaleString(),
+      txnId: txnIdEl.textContent || 'TRX-' + Math.random().toString(36).substr(2, 8)
+    };
+
+    // Check if jsPDF is available
+    if (typeof jsPDF === 'undefined') {
+      throw new Error('PDF library not loaded');
+    }
+
+    // Create PDF document
+    const doc = new jsPDF();
+    
+    // Add content to PDF
+    doc.setFontSize(18);
+    doc.setTextColor(67, 97, 238); // Primary color
+    doc.text('Payment Receipt', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0); // Black
+    doc.text(`Transaction ID: ${receiptData.txnId}`, 14, 30);
+    doc.text(`Amount: ${receiptData.amount}`, 14, 40);
+    doc.text(`Recipient: ${receiptData.recipient}`, 14, 50);
+    doc.text(`Date: ${receiptData.date}`, 14, 60);
+    
+    // Add status
+    doc.setTextColor(76, 201, 240); // Success color
+    doc.text('Status: Completed', 14, 70);
+    
+    // Add footer
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Thank you for using MyPay', 105, 140, { align: 'center' });
+    doc.text('This is an auto-generated receipt', 105, 145, { align: 'center' });
+    
+    // Save the PDF
+    doc.save(`Receipt_${receiptData.txnId}.pdf`);
+    
+    // Play success sound if available
+    if (typeof playTapSound === 'function') {
+      playTapSound();
+    }
+
+  } catch (error) {
+    console.error('Error generating receipt:', error);
+    alert('Could not download receipt. Please try again later.');
+  }
+}
+
+// Helper function to copy to clipboard
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Receipt copied to clipboard! You can now paste it anywhere.');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    alert('Could not copy receipt. Please manually copy the details.');
+  });
+}
+
+// Show success page with transaction details
+function showSuccess(message, transactionData = {}) {
+  try {
+    goTo('success-page');
+    
+    // Generate a random transaction ID
+    const txnId = 'TXN' + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+    
+    // Update receipt details
+    document.getElementById('receipt-amount').textContent = `Rs. ${transactionData.amount || '0'}`;
+    document.getElementById('receipt-recipient').textContent = transactionData.recipient || 'N/A';
+    document.getElementById('receipt-type').textContent = transactionData.type || 'Payment';
+    document.getElementById('receipt-date').textContent = new Date().toLocaleString();
+    document.getElementById('receipt-txn-id').textContent = txnId;
+    
+    // Show additional fields based on transaction type
+    const purposeContainer = document.getElementById('receipt-purpose-container');
+    if (transactionData.purpose) {
+      purposeContainer.style.display = 'flex';
+      document.getElementById('receipt-purpose').textContent = transactionData.purpose;
+    } else {
+      purposeContainer.style.display = 'none';
+    }
+    
+    const billContainer = document.getElementById('receipt-bill-container');
+    if (transactionData.billDetails) {
+      billContainer.style.display = 'flex';
+      document.getElementById('receipt-bill').textContent = transactionData.billDetails;
+    } else {
+      billContainer.style.display = 'none';
+    }
+
+    // Clear any existing animation
+    const animationContainer = document.getElementById('success-animation');
+    if (animationContainer) {
+      animationContainer.innerHTML = '';
+      
+      // Load and play success animation
+      const animation = lottie.loadAnimation({
+        container: animationContainer,
+        renderer: 'svg',
+        loop: false,
+        autoplay: true,
+        path: 'Animation - 1747554242073.json' // Your animation file
+      });
+
+      // Handle animation completion
+      animation.addEventListener('complete', () => {
+        animationContainer.style.opacity = '1';
+      });
+    }
+
+    // Play success sound if available
+    if (typeof playSuccessSound === 'function') {
+      playSuccessSound();
+    }
+
+  } catch (error) {
+    console.error('Error showing success page:', error);
+    
+  }
+}
+// Function to share receipt
+function shareReceipt() {
+  const receiptData = {
+    amount: document.getElementById('receipt-amount').textContent,
+    recipient: document.getElementById('receipt-recipient').textContent,
+    date: document.getElementById('receipt-date').textContent,
+    txnId: document.getElementById('receipt-txn-id').textContent
+  };
+
+  const shareText = `Payment Receipt\n\n` +
+                   `Transaction ID: ${receiptData.txnId}\n` +
+                   `Amount: ${receiptData.amount}\n` +
+                   `Recipient: ${receiptData.recipient}\n` +
+                   `Date: ${receiptData.date}\n` +
+                   `Status: Completed`;
+  
+  if (navigator.share) {
+    navigator.share({
+      title: 'MyPay Receipt',
+      text: shareText
+    }).catch(err => {
+      console.log('Error sharing:', err);
+      fallbackShare(shareText);
+    });
+  } else {
+    fallbackShare(shareText);
+  }
+}
+
+function fallbackShare(text) {
+  // Copy to clipboard as fallback
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Receipt copied to clipboard!');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    prompt('Copy this receipt:', text);
+  });
+}
+
+
+
+// Initialize success animation when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  const animationContainer = document.getElementById('success-animation');
+  if (animationContainer) {
+    lottie.loadAnimation({
+      container: animationContainer,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: 'Animation - 1747554242073.json'
+    });
+  }
+});
+  </script>
+</body>
+</html>
